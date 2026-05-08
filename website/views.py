@@ -1,12 +1,34 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from .models import Todo
 
 
 @login_required
 def home(request):
-    return render(request, 'home.html', {})
+    if request.method == 'POST':
+        title = request.POST.get('title', '').strip()
+        if title:
+            Todo.objects.create(user=request.user, title=title)
+        return redirect('home')
+    todos = Todo.objects.filter(user=request.user)
+    return render(request, 'home.html', {'todos': todos})
+
+
+@login_required
+def toggle_todo(request, pk):
+    todo = get_object_or_404(Todo, pk=pk, user=request.user)
+    todo.completed = not todo.completed
+    todo.save()
+    return redirect('home')
+
+
+@login_required
+def delete_todo(request, pk):
+    todo = get_object_or_404(Todo, pk=pk, user=request.user)
+    todo.delete()
+    return redirect('home')
 
 
 def register(request):

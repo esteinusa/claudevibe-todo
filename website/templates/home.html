@@ -2,12 +2,36 @@
 <html>
 <head><title>Daily Planner</title></head>
 <body>
-  <h1>Welcome to my Calendar</h1>
-  <p>Daily Planner - Eric Steinman</p>
-  <p>Logged in as <strong>{{ request.user.username }}</strong></p>
-  <form method="post" action="{% url 'logout' %}">
+  <h1>Daily Planner</h1>
+  <p>Logged in as <strong>{{ request.user.username }}</strong> &mdash;
+    <form method="post" action="{% url 'logout' %}" style="display:inline">
+      {% csrf_token %}
+      <button type="submit">Log Out</button>
+    </form>
+  </p>
+
+  <form method="post">
     {% csrf_token %}
-    <button type="submit">Log Out</button>
+    <input type="text" name="title" placeholder="New todo..." autofocus required>
+    <button type="submit">Add</button>
   </form>
+
+  <ul>
+    {% for todo in todos %}
+    <li>
+      <form method="post" action="{% url 'toggle_todo' todo.pk %}" style="display:inline">
+        {% csrf_token %}
+        <button type="submit">{% if todo.completed %}&#9745;{% else %}&#9744;{% endif %}</button>
+      </form>
+      <span style="{% if todo.completed %}text-decoration:line-through;color:gray{% endif %}">{{ todo.title }}</span>
+      <form method="post" action="{% url 'delete_todo' todo.pk %}" style="display:inline">
+        {% csrf_token %}
+        <button type="submit">&#x2715;</button>
+      </form>
+    </li>
+    {% empty %}
+    <li>No todos yet.</li>
+    {% endfor %}
+  </ul>
 </body>
 </html>
