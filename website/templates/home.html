@@ -1,37 +1,41 @@
-<!DOCTYPE html>
-<html>
-<head><title>Daily Planner</title></head>
-<body>
-  <h1>Daily Planner</h1>
-  <p>Logged in as <strong>{{ request.user.username }}</strong> &mdash;
-    <form method="post" action="{% url 'logout' %}" style="display:inline">
-      {% csrf_token %}
-      <button type="submit">Log Out</button>
-    </form>
-  </p>
+{% extends "base.html" %}
+{% block title %}Daily Planner{% endblock %}
 
-  <form method="post">
+{% block content %}
+  <div class="header">
+    <h1>Daily Planner</h1>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span class="header-user">{{ request.user.username }}</span>
+      <form method="post" action="{% url 'logout' %}">
+        {% csrf_token %}
+        <button class="btn-logout" type="submit">Log out</button>
+      </form>
+    </div>
+  </div>
+
+  <form class="add-form" method="post">
     {% csrf_token %}
-    <input type="text" name="title" placeholder="New todo..." autofocus required>
-    <button type="submit">Add</button>
+    <input type="text" name="title" placeholder="Add a new task..." autofocus required>
+    <button class="btn-add" type="submit">+ Add</button>
   </form>
 
-  <ul>
+  <ul class="todo-list">
     {% for todo in todos %}
-    <li>
-      <form method="post" action="{% url 'toggle_todo' todo.pk %}" style="display:inline">
+    <li class="todo-item">
+      <form method="post" action="{% url 'toggle_todo' todo.pk %}">
         {% csrf_token %}
-        <button type="submit">{% if todo.completed %}&#9745;{% else %}&#9744;{% endif %}</button>
+        <button class="btn-icon" type="submit" title="Toggle">
+          {% if todo.completed %}&#9745;{% else %}&#9744;{% endif %}
+        </button>
       </form>
-      <span style="{% if todo.completed %}text-decoration:line-through;color:gray{% endif %}">{{ todo.title }}</span>
-      <form method="post" action="{% url 'delete_todo' todo.pk %}" style="display:inline">
+      <span class="todo-title {% if todo.completed %}done{% endif %}">{{ todo.title }}</span>
+      <form method="post" action="{% url 'delete_todo' todo.pk %}">
         {% csrf_token %}
-        <button type="submit">&#x2715;</button>
+        <button class="btn-icon" type="submit" title="Delete">&#x2715;</button>
       </form>
     </li>
     {% empty %}
-    <li>No todos yet.</li>
+    <li class="empty-state">No tasks yet. Add one above!</li>
     {% endfor %}
   </ul>
-</body>
-</html>
+{% endblock %}
