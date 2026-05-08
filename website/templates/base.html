@@ -17,6 +17,23 @@
   </style>
 </head>
 <body>
+  <nav class="navbar navbar-dark bg-dark border-bottom border-secondary">
+    <div class="container-fluid px-4">
+      <a class="navbar-brand gradient-text fw-bold" href="{% url 'home' %}">Stride</a>
+      <div class="d-flex align-items-center gap-3">
+        {% if user.is_authenticated %}
+          <span class="text-muted small">{{ user.username }}</span>
+          <form method="post" action="{% url 'logout' %}" class="m-0">
+            {% csrf_token %}
+            <button class="btn btn-outline-secondary btn-sm" type="submit">Log out</button>
+          </form>
+        {% else %}
+          <a href="{% url 'login' %}" class="btn btn-outline-secondary btn-sm">Log in</a>
+          <a href="{% url 'register' %}" class="btn btn-primary btn-sm">Register</a>
+        {% endif %}
+      </div>
+    </div>
+  </nav>
   <div class="container py-5">
     <div class="row justify-content-center">
       <div class="col-12 col-md-7 col-lg-5">

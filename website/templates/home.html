@@ -4,17 +4,6 @@
 {% block content %}
 <div class="card shadow-sm">
   <div class="card-body p-4">
-    <div class="d-flex align-items-center justify-content-between mb-4">
-      <h1 class="h4 mb-0 gradient-text">Daily Planner</h1>
-      <div class="d-flex align-items-center gap-2">
-        <small class="text-muted">{{ request.user.username }}</small>
-        <form method="post" action="{% url 'logout' %}">
-          {% csrf_token %}
-          <button class="btn btn-outline-secondary btn-sm" type="submit">Log out</button>
-        </form>
-      </div>
-    </div>
-
     <form class="mb-4" method="post">
       {% csrf_token %}
       <div class="input-group">
