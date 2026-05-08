@@ -1,2 +1,13 @@
-<h1>Welcome to my Calendar</h1>
-<p>Daily Planner - Eric Steinman</p>
+<!DOCTYPE html>
+<html>
+<head><title>Daily Planner</title></head>
+<body>
+  <h1>Welcome to my Calendar</h1>
+  <p>Daily Planner - Eric Steinman</p>
+  <p>Logged in as <strong>{{ request.user.username }}</strong></p>
+  <form method="post" action="{% url 'logout' %}">
+    {% csrf_token %}
+    <button type="submit">Log Out</button>
+  </form>
+</body>
+</html>
