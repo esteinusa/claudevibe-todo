@@ -2,48 +2,58 @@
 {% block title %}Daily Planner{% endblock %}
 
 {% block content %}
-  <div class="header">
-    <h1>Daily Planner</h1>
-    <div style="display:flex;align-items:center;gap:12px">
-      <span class="header-user">{{ request.user.username }}</span>
-      <form method="post" action="{% url 'logout' %}">
-        {% csrf_token %}
-        <button class="btn-logout" type="submit">Log out</button>
-      </form>
-    </div>
-  </div>
-
-  <form class="add-form" method="post">
-    {% csrf_token %}
-    <input type="text" name="title" placeholder="Add a new task..." autofocus required>
-    <input type="date" name="due_date" title="Due date">
-    <button class="btn-add" type="submit">+ Add</button>
-  </form>
-
-  <ul class="todo-list">
-    {% for todo in todos %}
-    <li class="todo-item">
-      <form method="post" action="{% url 'toggle_todo' todo.pk %}">
-        {% csrf_token %}
-        <button class="btn-icon" type="submit" title="Toggle">
-          {% if todo.completed %}&#9745;{% else %}&#9744;{% endif %}
-        </button>
-      </form>
-      <div class="todo-body">
-        <span class="todo-title {% if todo.completed %}done{% endif %}">{{ todo.title }}</span>
-        {% if todo.due_date %}
-        <span class="due-date {% if not todo.completed and todo.due_date < today %}overdue{% endif %}">
-          {{ todo.due_date|date:"M j" }}
-        </span>
-        {% endif %}
+<div class="card shadow-sm">
+  <div class="card-body p-4">
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <h1 class="h4 mb-0 gradient-text">Daily Planner</h1>
+      <div class="d-flex align-items-center gap-2">
+        <small class="text-muted">{{ request.user.username }}</small>
+        <form method="post" action="{% url 'logout' %}">
+          {% csrf_token %}
+          <button class="btn btn-outline-secondary btn-sm" type="submit">Log out</button>
+        </form>
       </div>
-      <form method="post" action="{% url 'delete_todo' todo.pk %}">
-        {% csrf_token %}
-        <button class="btn-icon" type="submit" title="Delete">&#x2715;</button>
-      </form>
-    </li>
-    {% empty %}
-    <li class="empty-state">No tasks yet. Add one above!</li>
-    {% endfor %}
-  </ul>
+    </div>
+
+    <form class="mb-4" method="post">
+      {% csrf_token %}
+      <div class="input-group">
+        <input type="text" class="form-control" name="title" placeholder="Add a new task..." autofocus required>
+        <input type="date" class="form-control" name="due_date" title="Due date" style="max-width:150px">
+        <button class="btn btn-primary" type="submit">+ Add</button>
+      </div>
+    </form>
+
+    <ul class="list-group list-group-flush">
+      {% for todo in todos %}
+      <li class="list-group-item d-flex align-items-center gap-2 px-0 bg-transparent">
+        <form method="post" action="{% url 'toggle_todo' todo.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-link p-0 text-decoration-none lh-1" type="submit" title="Toggle">
+            {% if todo.completed %}
+              <span class="text-success fs-5">&#9745;</span>
+            {% else %}
+              <span class="text-muted fs-5">&#9744;</span>
+            {% endif %}
+          </button>
+        </form>
+        <div class="flex-grow-1">
+          <span class="todo-title {% if todo.completed %}done text-muted{% endif %}">{{ todo.title }}</span>
+          {% if todo.due_date %}
+          <br><small class="due-date {% if not todo.completed and todo.due_date < today %}overdue{% else %}text-muted{% endif %}">
+            {{ todo.due_date|date:"M j" }}
+          </small>
+          {% endif %}
+        </div>
+        <form method="post" action="{% url 'delete_todo' todo.pk %}">
+          {% csrf_token %}
+          <button class="btn btn-link p-0 text-danger text-decoration-none lh-1" type="submit" title="Delete">&#x2715;</button>
+        </form>
+      </li>
+      {% empty %}
+      <li class="list-group-item text-center text-muted bg-transparent px-0 py-4">No tasks yet. Add one above!</li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
 {% endblock %}
