@@ -16,6 +16,7 @@
   <form class="add-form" method="post">
     {% csrf_token %}
     <input type="text" name="title" placeholder="Add a new task..." autofocus required>
+    <input type="date" name="due_date" title="Due date">
     <button class="btn-add" type="submit">+ Add</button>
   </form>
 
@@ -28,7 +29,14 @@
           {% if todo.completed %}&#9745;{% else %}&#9744;{% endif %}
         </button>
       </form>
-      <span class="todo-title {% if todo.completed %}done{% endif %}">{{ todo.title }}</span>
+      <div class="todo-body">
+        <span class="todo-title {% if todo.completed %}done{% endif %}">{{ todo.title }}</span>
+        {% if todo.due_date %}
+        <span class="due-date {% if not todo.completed and todo.due_date < today %}overdue{% endif %}">
+          {{ todo.due_date|date:"M j" }}
+        </span>
+        {% endif %}
+      </div>
       <form method="post" action="{% url 'delete_todo' todo.pk %}">
         {% csrf_token %}
         <button class="btn-icon" type="submit" title="Delete">&#x2715;</button>

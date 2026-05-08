@@ -57,6 +57,20 @@
       margin-bottom: 6px;
     }
 
+    input[type="date"] {
+      padding: 10px 14px;
+      background: #0f0f13;
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      color: #e8e8f0;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s;
+      color-scheme: dark;
+    }
+
+    input[type="date"]:focus { border-color: #7c3aed; }
+
     input[type="text"],
     input[type="password"] {
       width: 100%;
@@ -200,8 +214,14 @@
 
     .todo-item:last-child { border-bottom: none; }
 
-    .todo-title {
+    .todo-body {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .todo-title {
       font-size: 0.95rem;
       color: #e8e8f0;
     }
@@ -210,6 +230,13 @@
       text-decoration: line-through;
       color: #444;
     }
+
+    .due-date {
+      font-size: 0.75rem;
+      color: #666;
+    }
+
+    .due-date.overdue { color: #f87171; }
 
     .empty-state {
       text-align: center;

@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
+from django.utils.timezone import localdate
 from .models import Todo
 
 
@@ -9,11 +10,12 @@ from .models import Todo
 def home(request):
     if request.method == 'POST':
         title = request.POST.get('title', '').strip()
+        due_date = request.POST.get('due_date') or None
         if title:
-            Todo.objects.create(user=request.user, title=title)
+            Todo.objects.create(user=request.user, title=title, due_date=due_date)
         return redirect('home')
     todos = Todo.objects.filter(user=request.user)
-    return render(request, 'home.html', {'todos': todos})
+    return render(request, 'home.html', {'todos': todos, 'today': localdate()})
 
 
 @login_required
